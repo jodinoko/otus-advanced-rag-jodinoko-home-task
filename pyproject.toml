@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "corporate-rag-assistant"
+version = "0.1.0"
+description = "Corporate RAG assistant with source-grounded answers and evaluation"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "beautifulsoup4>=4.12,<5",
+  "gradio>=5.0,<6",
+  "llama-index-core>=0.12,<0.13",
+  "llama-index-embeddings-huggingface>=0.5,<0.6",
+  "llama-index-llms-openai-like>=0.3,<0.4",
+  "llama-index-retrievers-bm25>=0.5,<0.6",
+  "llama-index-vector-stores-qdrant>=0.4,<0.5",
+  # RAGAS currently imports the legacy VertexAI adapter retained in 0.3.x.
+  "langchain-community>=0.3,<0.4",
+  "langchain-huggingface>=1.2,<2",
+  "langchain-openai>=1.0,<2",
+  "langfuse>=3.0,<4",
+  "openai>=1.0,<2",
+  "pymupdf>=1.24,<2",
+  # datasets==2.x (a RAGAS dependency) still needs the legacy PyExtensionType API.
+  "pyarrow>=14,<21",
+  "python-dotenv>=1.0,<2",
+  "qdrant-client>=1.13,<1.14",
+  "ragas>=0.4.3,<0.5",
+  "rank-bm25>=0.2,<0.3",
+  "sentence-transformers>=3.0,<4",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0,<9", "ruff>=0.9,<1"]
+
+[project.scripts]
+rag-index = "corporate_rag.cli:index_main"
+rag-evaluate = "corporate_rag.evaluation:main"
+rag-ui = "corporate_rag.ui:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/corporate_rag"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100

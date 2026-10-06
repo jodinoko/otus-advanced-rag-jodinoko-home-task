@@ -1,0 +1,32 @@
+[
+  {
+    "id": "direct_pdf",
+    "question": "В какой срок нужно сообщить о потере корпоративного ноутбука?",
+    "expected_sources": ["06_information_security_policy.pdf"],
+    "ground_truth": "О потере устройства нужно сообщить в течение 15 минут с момента обнаружения."
+  },
+  {
+    "id": "exact_term",
+    "question": "Какой канал является основным для P1 и когда звонить на номер 700?",
+    "expected_sources": ["04_support_sla.md", "05_contacts_and_systems.txt"],
+    "ground_truth": "Сначала создаётся обращение в ServiceDesk; на номер 700 звонят, если P1 не подтверждён в течение 15 минут."
+  },
+  {
+    "id": "aggregation",
+    "question": "Какие действия нужны при увольнении сотрудника для отзыва доступа?",
+    "expected_sources": ["access-provisioning.html"],
+    "ground_truth": "Руководитель уведомляет HR и IT Operations через PeopleHub в день события, а IT Operations блокирует доступы не позднее конца рабочего дня."
+  },
+  {
+    "id": "archive_conflict",
+    "question": "Когда следует планово заменить рабочий ноутбук?",
+    "expected_sources": ["02_remote_work_policy.md", "equipment-lifecycle.html"],
+    "ground_truth": "Стандартный срок плановой замены рабочего ноутбука составляет четыре года."
+  },
+  {
+    "id": "out_of_domain",
+    "question": "Какой бюджет выделен на новогодний корпоратив?",
+    "expected_sources": [],
+    "ground_truth": "Я не знаю"
+  }
+]
