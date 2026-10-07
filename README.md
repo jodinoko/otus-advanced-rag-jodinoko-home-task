@@ -54,6 +54,8 @@ uv run rag-ui
 
 Интерфейс будет доступен по адресу [http://127.0.0.1:7860](http://127.0.0.1:7860).
 
+![Пример интерфейса Corporate RAG Assistant](<docs/images/Screenshot 2026-10-07 at 14.07.17.png>)
+
 ## Langfuse
 
 Создайте проект в [Langfuse](https://cloud.langfuse.com/) и добавьте его ключи в `.env`:
