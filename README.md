@@ -74,6 +74,31 @@ uv run rag-evaluate --with-ragas
 
 `data/evaluation/golden_questions.json` содержит пять сценариев: прямой факт, точный термин, агрегация, конфликт архивной и действующей политики, Out-of-Domain. Скрипт считает `Recall@3` и `MRR@3`; с `--with-ragas` Qwen3 14B используется как LLM-as-a-Judge и оценивает Faithfulness, Answer Relevance, Context Precision и Context Recall.
 
+### Результаты оценки
+
+Полный запуск `uv run rag-evaluate --with-ragas` завершился со следующими результатами:
+
+```json
+{
+  "Recall@3": 0.6,
+  "MRR@3": 0.6,
+  "ragas": {
+    "faithfulness": 0.7083333333333334,
+    "answer_relevancy": 0.6406861875490131,
+    "context_precision_with_reference": 0.874999999925,
+    "context_recall": 1.0,
+    "evaluated_samples": {
+      "faithfulness": 4,
+      "answer_relevancy": 5,
+      "context_precision_with_reference": 4,
+      "context_recall": 4
+    }
+  }
+}
+```
+
+`Recall@3` и `MRR@3` равны 0.6: ожидаемый источник попал в top-3 в трёх из пяти сценариев, но не всегда занимал верхнюю позицию. `Context Recall = 1.0` показывает, что для всех четырёх сценариев с релевантным контекстом retrieval покрыл факты из эталонного ответа. При этом `Faithfulness ≈ 0.71` и `Answer Relevancy ≈ 0.64` указывают, что главные зоны для улучшения — ранжирование фрагментов и точность использования контекста моделью.
+
 ## Анализ слабых мест и тестирование
 
 Ниже приведены пять ручных прогонов интерфейса. Ссылки на источники выделены жирным.

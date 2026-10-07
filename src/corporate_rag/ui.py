@@ -7,6 +7,18 @@ from corporate_rag.config import settings
 from corporate_rag.ingestion import load_source_chunks
 from corporate_rag.runtime import create_assistant
 
+LOADING_INDICATOR = """
+<div class=\"answer-loading\" role=\"status\" aria-live=\"polite\">
+  <span class=\"answer-spinner\"></span> Ищу информацию и готовлю ответ…
+</div>
+"""
+
+LOADING_CSS = """
+.answer-loading { align-items: center; color: var(--body-text-color); display: flex; gap: 8px; min-height: 28px; }
+.answer-spinner { animation: answer-spin .8s linear infinite; border: 3px solid var(--border-color-primary); border-radius: 50%; border-top-color: var(--color-accent); height: 16px; width: 16px; }
+@keyframes answer-spin { to { transform: rotate(360deg); } }
+"""
+
 
 def document_catalog() -> dict[str, str]:
     """Prepare source documents for the read-only panel in the UI."""
@@ -32,6 +44,12 @@ def build_ui() -> gr.Blocks:
         return catalog.get(source, "Выберите документ.")
 
     def ask(question: str):
+        if not question.strip():
+            yield "Введите вопрос.", "", gr.update(value="", visible=False)
+            return
+
+        # Clear the previous result before the synchronous RAG call begins.
+        yield "", "", gr.update(value=LOADING_INDICATOR, visible=True)
         result = assistant.answer(question, history=history)
         history.append((question, result.text))
         source_text = "\n".join(
@@ -39,9 +57,9 @@ def build_ui() -> gr.Blocks:
             f"(score: {item.score:.3f})"
             for item in result.sources
         ) or "Нет источников: ответ сформирован как отказ."
-        return result.text, source_text
+        yield result.text, source_text, gr.update(value="", visible=False)
 
-    with gr.Blocks(title="Corporate RAG Assistant") as app:
+    with gr.Blocks(title="Corporate RAG Assistant", css=LOADING_CSS) as app:
         gr.Markdown("# Корпоративный ассистент\nОтвечает только по базе знаний и показывает источники.")
         gr.Markdown("## Документы базы знаний")
         with gr.Row():
@@ -62,14 +80,14 @@ def build_ui() -> gr.Blocks:
                 ask_button = gr.Button("Спросить", variant="primary")
                 answer = gr.Markdown(label="Ответ")
                 sources = gr.Markdown(label="Извлечённые источники")
+                loading = gr.HTML(visible=False)
 
         source_document.change(show_document, inputs=source_document, outputs=document_text)
         ask_button.click(
             ask,
             inputs=question,
-            outputs=[answer, sources],
-            show_progress="minimal",
-            show_progress_on=answer,
+            outputs=[answer, sources, loading],
+            show_progress="hidden",
         )
     return app
 
